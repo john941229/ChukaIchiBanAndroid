@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:line="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -21,34 +21,33 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="6"
+            android:layout_height="wrap_content"
+
             android:background="@drawable/background_main"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="3"/>
+                android:layout_height="15dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:layout_weight="2.5">
+                >
 
                 <ImageButton
                     android:id="@+id/mainPageMenu"
-                    android:layout_width="match_parent"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="#00000000"
                     android:src="@drawable/icon_menu"
-                    android:layout_weight="3"
+                    android:onClick="callNavi"
                     />
 
                 <com.chuka.chuka.LineEditText
@@ -68,19 +67,19 @@
 
                 <ImageButton
                     android:id="@+id/collection"
-                    android:layout_width="match_parent"
+                    android:layout_width="50dp"
                     android:layout_height="match_parent"
                     android:background="#00000000"
                     android:src="@drawable/icon_collection"
-                    android:layout_weight="3"
+
                     />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="128dp"
                 android:orientation="horizontal"
-                android:layout_weight="1">
+                >
 
                 <Button
                     android:id="@+id/mainPageTypeButton_0"
@@ -88,7 +87,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#00000000"
-                    android:text="菜肴"
+                    android:text="@string/type_0"
                     android:textSize="20sp"
                     android:textColor="#FFFFFF"
                     android:paddingTop="15dp"
@@ -102,11 +101,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#00000000"
-                    android:text="主食"
+                    android:text="@string/type_1"
                     android:textSize="20sp"
                     android:textColor="#FFFFFF"
                     android:paddingTop="15dp"
                     android:drawableTop="@drawable/typepic1"
+                    android:onClick="searchType1"
                     />
                 <Button
                     android:id="@+id/mainPageTypeButton_2"
@@ -114,11 +114,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#00000000"
-                    android:text="甜点"
+                    android:text="@string/type_2"
                     android:textSize="20sp"
                     android:textColor="#FFFFFF"
                     android:paddingTop="15dp"
                     android:drawableTop="@drawable/typepic2"
+                    android:onClick="searchType2"
                     />
                 <Button
                     android:id="@+id/mainPageTypeButton_3"
@@ -126,11 +127,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="#00000000"
-                    android:text="汤类"
+                    android:text="@string/type_3"
                     android:textSize="20sp"
                     android:textColor="#FFFFFF"
                     android:paddingTop="15dp"
                     android:drawableTop="@drawable/typepic3"
+                    android:onClick="searchType3"
                     />
 
             </LinearLayout>
@@ -139,8 +141,7 @@
 
         <Button
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="8"
+            android:layout_height="50dp"
             android:text="全部菜谱"
             android:textSize="24dp"
             android:textColor="#ffffff"
@@ -151,11 +152,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="4"
             android:orientation="horizontal">
 
         </LinearLayout>
     </LinearLayout>
 
 
-</LinearLayout>
+
+</android.support.v4.widget.DrawerLayout>
