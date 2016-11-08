@@ -32,7 +32,7 @@
         android:id="@+id/types"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stretchColumns="*"
+        android:stretchColumns="0,1,2,3"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/my_toolbar">

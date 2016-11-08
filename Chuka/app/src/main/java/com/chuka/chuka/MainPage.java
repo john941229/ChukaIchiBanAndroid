@@ -20,7 +20,7 @@ import static android.R.attr.button;
 
 public class MainPage extends AppCompatActivity {
 
-    public final static String EXTRA_SEARCH="com.chuka.chuka.SEARCH";
+    public final static String EXTRA_TYPE_NUM="com.chuka.chuka.TYPE_NUM";
 //    public final static String EXTRA_SEARCH_1="com.chuka.chuka.SEARCH1";
 //    public final static String EXTRA_SEARCH_2="com.chuka.chuka.SEARCH2";
 //    public final static String EXTRA_SEARCH_3="com.chuka.chuka.SEARCH3";
@@ -48,6 +48,7 @@ public class MainPage extends AppCompatActivity {
         Type = typeButton0.getText().toString();
 
         intent.putExtra(EXTRA_TYPE,Type);
+        intent.putExtra(EXTRA_TYPE_NUM,0);
         startActivity(intent);
     }
     public void searchType1(View view){
@@ -59,7 +60,7 @@ public class MainPage extends AppCompatActivity {
 
         intent.putExtra(EXTRA_TYPE,Type);
 
-//        intent.putExtra(EXTRA_SEARCH,type);
+        intent.putExtra(EXTRA_TYPE_NUM,1);
         startActivity(intent);
     }
     public void searchType2(View view){
@@ -69,6 +70,7 @@ public class MainPage extends AppCompatActivity {
         Type = typeButton2.getText().toString();
 
         intent.putExtra(EXTRA_TYPE,Type);
+        intent.putExtra(EXTRA_TYPE_NUM,2);
         startActivity(intent);
     }
     public void searchType3(View view){
@@ -78,6 +80,7 @@ public class MainPage extends AppCompatActivity {
         Type = typeButton3.getText().toString();
 
         intent.putExtra(EXTRA_TYPE,Type);
+        intent.putExtra(EXTRA_TYPE_NUM,3);
         startActivity(intent);
     }
     public void callNavigation(View view){
