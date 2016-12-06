@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,10 +24,14 @@ import android.widget.TextView;
 
 public class TypePages extends AppCompatActivity{
 
+    public final static String EXTRA_SEARCHING="com.chuka.chuka.SEARCHING";
     private final Button[] typeButton = new Button[30];
     private int buttonNum = 0;
     private int buttonLine = 0;
     private int buttonExp = 0;
+
+    public String typeName= "";
+    String TAG = "--";
 
     private Drawable [][] typePics = new Drawable[4][20];
 
@@ -34,7 +39,7 @@ public class TypePages extends AppCompatActivity{
 
     private String[][] buttonText = new String[4][20];
 
-    public void setTypePics() {
+    public void setTypebuttons() {
         typePics[0][0]=getResources().getDrawable(R.drawable.type0pic0);
         typePics[0][1]=getResources().getDrawable(R.drawable.type0pic1);
         typePics[0][2]=getResources().getDrawable(R.drawable.type0pic2);
@@ -43,34 +48,6 @@ public class TypePages extends AppCompatActivity{
         typePics[0][5]=getResources().getDrawable(R.drawable.type0pic5);
         typePics[0][6]=getResources().getDrawable(R.drawable.type0pic6);
         typePics[0][7]=getResources().getDrawable(R.drawable.type0pic7);
-
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState){
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.type_page);
-
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent intent = getIntent();
-        String typeName  = intent.getStringExtra(MainPage.EXTRA_TYPE);
-        int typeNum = intent.getIntExtra(MainPage.EXTRA_TYPE_NUM,0);
-
-        TextView layout = (TextView) findViewById(R.id.title_type_name);
-        layout.setText(typeName);
-    //  layout.setTextSize(40);
-
-
-        TableLayout layout2 = (TableLayout)findViewById(R.id.types);
-        //layout2.setOrientation(LinearLayout.HORIZONTAL);
-//        setContentView(layout2);
-
-        setTypePics();
-        /////////////////////////
-
-        buttonNum = typeMenuNum[typeNum];//获取按钮数
 
         {
             buttonText[0][0]="素食";
@@ -87,8 +64,31 @@ public class TypePages extends AppCompatActivity{
             buttonText[2][0]="2-0";
         }
 
+    }
 
-        /////////////////////////
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.type_page);
+
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent intent = getIntent();
+        typeName  = intent.getStringExtra(MainPage.EXTRA_TYPE);
+        final int typeNum = intent.getIntExtra(MainPage.EXTRA_TYPE_NUM,0);
+
+        TextView layout = (TextView) findViewById(R.id.title_type_name);
+        layout.setText(typeName);
+    //  layout.setTextSize(40);
+
+
+        TableLayout layout2 = (TableLayout)findViewById(R.id.types);
+        //layout2.setOrientation(LinearLayout.HORIZONTAL);
+//        setContentView(layout2);
+        buttonNum = typeMenuNum[typeNum];//获取按钮数
+
+        setTypebuttons();
 
         buttonLine = (buttonNum-1) / 4 +1;
         buttonExp = buttonNum % 4;
@@ -104,10 +104,14 @@ public class TypePages extends AppCompatActivity{
             for(int j=0;j<line4 ;j++)
             {
                 typeButton[num] = new Button(this);
+                typeButton[num].setTag(num);
                 typeButton[num].setText(buttonText[typeNum][num]);
                 typeButton[num].setBackgroundColor(Color.parseColor("#00000000"));
+
                 Drawable top = typePics[typeNum][num];
                 typeButton[num].setCompoundDrawablesWithIntrinsicBounds(null,top,null,null);
+
+                typeButton[num].setOnClickListener(typeButtonListener);
 
                 tableRow.addView(typeButton[num]);
                 num = num+1;
@@ -117,11 +121,34 @@ public class TypePages extends AppCompatActivity{
 
     }
 
+    Button.OnClickListener typeButtonListener = new Button.OnClickListener(){
+        public void onClick(View v){
+            Intent intent = new Intent(TypePages.this,ResultPage.class);
+            int buttonTag = (Integer) v.getTag();
+            String buttonText = typeButton[buttonTag].getText().toString();
+            intent.putExtra(EXTRA_SEARCHING,buttonText);
+            intent.putExtra("ParentClassName","TypePages");
+
+            TypePages.this.onPause();
+            startActivity(intent);
+
+
+        }
+    };
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu){
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity_actions, menu);
-        return super.onCreateOptionsMenu(menu);
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG,"----onpause---");
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG,"----onresume---");
+
+        TextView layout = (TextView) findViewById(R.id.title_type_name);
+        layout.setText(typeName);
+        Log.d(TAG,typeName);
+    }
+
 }

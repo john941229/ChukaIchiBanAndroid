@@ -33,7 +33,7 @@
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="15dp"/>
+                android:layout_height="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,87 +74,108 @@
 
                     />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="128dp"
-                android:orientation="horizontal"
-                >
+                android:layout_height="10dp"/>
+        </LinearLayout>
 
-                <Button
-                    android:id="@+id/mainPageTypeButton_0"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#00000000"
-                    android:text="@string/type_0"
-                    android:textSize="20sp"
-                    android:textColor="#FFFFFF"
-                    android:paddingTop="15dp"
-                    android:drawableTop="@drawable/typepic0"
-                    android:onClick="searchType0"
-                    />
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
 
-                <Button
-                    android:id="@+id/mainPageTypeButton_1"
+                android:background="@drawable/background_main"
+                android:orientation="vertical">
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#00000000"
-                    android:text="@string/type_1"
-                    android:textSize="20sp"
-                    android:textColor="#FFFFFF"
-                    android:paddingTop="15dp"
-                    android:drawableTop="@drawable/typepic1"
-                    android:onClick="searchType1"
-                    />
-                <Button
-                    android:id="@+id/mainPageTypeButton_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#00000000"
-                    android:text="@string/type_2"
-                    android:textSize="20sp"
-                    android:textColor="#FFFFFF"
-                    android:paddingTop="15dp"
-                    android:drawableTop="@drawable/typepic2"
-                    android:onClick="searchType2"
-                    />
-                <Button
-                    android:id="@+id/mainPageTypeButton_3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="#00000000"
-                    android:text="@string/type_3"
-                    android:textSize="20sp"
-                    android:textColor="#FFFFFF"
-                    android:paddingTop="15dp"
-                    android:drawableTop="@drawable/typepic3"
-                    android:onClick="searchType3"
-                    />
+                    android:layout_height="128dp"
+                    android:orientation="horizontal"
+                    >
+
+                    <Button
+                        android:id="@+id/mainPageTypeButton_0"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:text="@string/type_0"
+                        android:textSize="20sp"
+                        android:textColor="#FFFFFF"
+                        android:paddingTop="15dp"
+                        android:drawableTop="@drawable/typepic0"
+                        android:onClick="searchType0"
+                        />
+
+                    <Button
+                        android:id="@+id/mainPageTypeButton_1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:text="@string/type_1"
+                        android:textSize="20sp"
+                        android:textColor="#FFFFFF"
+                        android:paddingTop="15dp"
+                        android:drawableTop="@drawable/typepic1"
+                        android:onClick="searchType1"
+                        />
+                    <Button
+                        android:id="@+id/mainPageTypeButton_2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:text="@string/type_2"
+                        android:textSize="20sp"
+                        android:textColor="#FFFFFF"
+                        android:paddingTop="15dp"
+                        android:drawableTop="@drawable/typepic2"
+                        android:onClick="searchType2"
+                        />
+                    <Button
+                        android:id="@+id/mainPageTypeButton_3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#00000000"
+                        android:text="@string/type_3"
+                        android:textSize="20sp"
+                        android:textColor="#FFFFFF"
+                        android:paddingTop="15dp"
+                        android:drawableTop="@drawable/typepic3"
+                        android:onClick="searchType3"
+                        />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
+                <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="全部菜谱"
+                android:textSize="24dp"
+                android:textColor="#ffffff"
+                android:background="@drawable/background_button"
+                android:id="@+id/button"
+                />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="全部菜谱"
-            android:textSize="24dp"
-            android:textColor="#ffffff"
-            android:background="@drawable/background_button"
-            android:id="@+id/button"
-            />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+                <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
 

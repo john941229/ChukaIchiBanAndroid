@@ -83,8 +83,6 @@ public class MainPage extends AppCompatActivity {
         intent.putExtra(EXTRA_TYPE_NUM,3);
         startActivity(intent);
     }
-    public void callNavigation(View view){
 
-    }
 }
 
