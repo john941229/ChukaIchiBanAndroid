@@ -28,16 +28,20 @@
 
     </android.support.v7.widget.Toolbar>
     <LinearLayout
+        android:id="@+id/search_resultspage_layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_below="@+id/result_toolbar">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/search_resultspage">
 
-        </ScrollView>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/search_resultspage">
+
+            </ListView>
+
+
 
 
     </LinearLayout>
