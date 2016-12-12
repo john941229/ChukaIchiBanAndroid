@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -100,6 +101,19 @@ public class ResultPage extends AppCompatActivity{
         final SimpleAdapter adapter = new SimpleAdapter(this,mData,R.layout.search_result_list,
                 new String[]{"imageUrl","name","material","id"},
                 new int[]{R.id.search_img,R.id.search_name,R.id.s_material,R.id.s_id});
+
+        adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Object data, String textRepresentation) {
+                if(view instanceof ImageView  && data instanceof  Bitmap){
+                    ImageView iv = (ImageView) view;
+                    iv.setImageBitmap((Bitmap) data);
+                    return true;
+                }else
+                return false;
+            }
+        });
+
         listview.setAdapter(adapter);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -138,7 +152,8 @@ public class ResultPage extends AppCompatActivity{
                 //imageView = R.drawable.type0pic0;
 
 
-                map.put("imageUrl",imageView);//?????????????????????????
+
+                map.put("imageUrl",bitmap);//?????????????????????????
 
                 map.put("name",name);
                 map.put("material",material);
