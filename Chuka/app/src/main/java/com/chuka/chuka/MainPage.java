@@ -32,11 +32,6 @@ public class MainPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-//        Button typeButton0 = (Button) findViewById(R.id.mainPageTypeButton_0) ;
-//        Button typeButton1 = (Button) findViewById(R.id.mainPageTypeButton_1) ;
-//        Button typeButton2 = (Button) findViewById(R.id.mainPageTypeButton_2) ;
-//        Button typeButton3 = (Button) findViewById(R.id.mainPageTypeButton_3) ;
-
 
 
     }

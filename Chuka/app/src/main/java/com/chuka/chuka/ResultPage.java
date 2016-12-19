@@ -1,5 +1,6 @@
 package com.chuka.chuka;
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,20 +10,25 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TableLayout;
@@ -63,6 +69,7 @@ public class ResultPage extends AppCompatActivity{
     public String searchName = "";
     private int resultNum=0;
     public String strResult = "";
+    private Context mContext = null;
     OkHttpClient client = new OkHttpClient();
     List<Map<String, Object>> mData;
 
@@ -72,6 +79,10 @@ public class ResultPage extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result_page);
+
+        mContext = this;//定义弹出窗口的parent为本view
+
+        //强制设置主线程进行网络请求
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);}
@@ -84,24 +95,25 @@ public class ResultPage extends AppCompatActivity{
 
         searchName = intent.getStringExtra(TypePages.EXTRA_SEARCHING);
 
-
+        //标题
         TextView layout = (TextView) findViewById(R.id.title_search);
         layout.setText(searchName);
 
 
-        getRequest(searchName);
+        getRequest(searchName);//请求数据
+
         while (strResult == ""){
-        }
+        }//等待数据
         System.out.println(strResult);
 
         ListView listview = (ListView)findViewById(R.id.search_resultspage);
 
         mData = getData(strResult);
-
+        //设置adapter数据格式内容
         final SimpleAdapter adapter = new SimpleAdapter(this,mData,R.layout.search_result_list,
                 new String[]{"imageUrl","name","material","id"},
                 new int[]{R.id.search_img,R.id.search_name,R.id.s_material,R.id.s_id});
-
+        //为adapter重写图片显示
         adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Object data, String textRepresentation) {
@@ -115,20 +127,65 @@ public class ResultPage extends AppCompatActivity{
         });
 
         listview.setAdapter(adapter);
-
+        //list item单击事件
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+            public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long arg3) {
-                Log.d("1",mData.get(arg2).get("id").toString());
+                Log.d("1",mData.get(position).get("materialList").toString());
+
+            }
+        });
+
+        //item 长按事件
+        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                //popupWindow调用
+                showPopupWindow(view,
+                        mData.get(position).get("name").toString(),
+                        (Bitmap)mData.get(position).get("imageUrl"),
+                        (List)mData.get(position).get("materialList"));
+                return false;
             }
         });
 
     }
 
+    private void showPopupWindow(View view,String name,Bitmap bitmap,List mList){
+        View contentView = LayoutInflater.from(mContext).inflate(
+                R.layout.pop_window,null);
+
+        final PopupWindow popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        popupWindow.setTouchable(true);
+        popupWindow.setTouchInterceptor(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
+
+        //设置弹框文字图片
+        TextView tV = (TextView)contentView.findViewById(R.id.popup_title);
+        tV.setText(name);
+        ImageView imageView = (ImageView)contentView.findViewById(R.id.pop_window_image);
+        imageView.setImageBitmap(bitmap);
+        TextView mLi = (TextView)contentView.findViewById(R.id.pop_material);
+        mLi.setText(mList.toString().replaceAll("[\\[\\]]",""));
+
+
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        //popupWindow居中显示
+        popupWindow.showAtLocation(view,Gravity.CENTER,0,0);
+        popupWindow.showAsDropDown(view);
+
+
+    }
+
 
     private List<Map<String, Object>> getData(String JSON) {
+        //处理返回的JSON串
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
 
         try{
@@ -142,21 +199,24 @@ public class ResultPage extends AppCompatActivity{
                 JSONArray material = jsonObj.getJSONArray("material");
                 String imageUrl = jsonObj.getString("imageUrl");
 
-                s += id+name+material+imageUrl+"...\n";
+                //s += id+name+material+imageUrl+"...\n";
 
                 Map<String, Object> map = new HashMap<String, Object>();
 
+                //图片下载
                 bitmap = getHttpBitmap(imageUrl);
-                ImageView imageView = new ImageView(this);
-                imageView.setImageBitmap(bitmap);
                 //imageView = R.drawable.type0pic0;
-
-
 
                 map.put("imageUrl",bitmap);//?????????????????????????
 
                 map.put("name",name);
-                map.put("material",material);
+
+                ArrayList<String> materialList = new ArrayList<String>();
+                for(int k =0;k<material.length();k++)
+                    materialList.add(material.getString(k));
+
+                map.put("material",materialList.toString().replaceAll("[\\[\\]]",""));
+                map.put("materialList",materialList);
                 map.put("id",id);
 
                 list.add(map);
@@ -172,6 +232,7 @@ public class ResultPage extends AppCompatActivity{
     }
 
     public static Bitmap getHttpBitmap(String url){
+        //从网络获取图片
         URL myFileURL;
         Bitmap bitmap = null;
         try{
