@@ -35,7 +35,7 @@ public class TypePages extends AppCompatActivity{
 
     private Drawable [][] typePics = new Drawable[4][20];
 
-    private int [] typeMenuNum = {8,3,1,1};
+    private int [] typeMenuNum = {8,4,4,4};
 
     private String[][] buttonText = new String[4][20];
 
@@ -48,6 +48,17 @@ public class TypePages extends AppCompatActivity{
         typePics[0][5]=getResources().getDrawable(R.drawable.type0pic5);
         typePics[0][6]=getResources().getDrawable(R.drawable.type0pic6);
         typePics[0][7]=getResources().getDrawable(R.drawable.type0pic7);
+        typePics[1][0]=getResources().getDrawable(R.drawable.type1pic0);
+        typePics[1][1]=getResources().getDrawable(R.drawable.type1pic1);
+        typePics[1][2]=getResources().getDrawable(R.drawable.type1pic2);
+        typePics[1][3]=getResources().getDrawable(R.drawable.type1pic3);
+        typePics[2][0]=getResources().getDrawable(R.drawable.type2pic0);
+        typePics[2][1]=getResources().getDrawable(R.drawable.type2pic1);
+        typePics[2][2]=getResources().getDrawable(R.drawable.type2pic2);
+        typePics[2][3]=getResources().getDrawable(R.drawable.type2pic3);
+        typePics[3][0]=getResources().getDrawable(R.drawable.type3pic0);
+        typePics[3][1]=getResources().getDrawable(R.drawable.type3pic1);
+
 
         {
             buttonText[0][0]="素食";
@@ -58,10 +69,16 @@ public class TypePages extends AppCompatActivity{
             buttonText[0][5]="蛋豆腌咸";
             buttonText[0][6]="快手菜";
             buttonText[0][7]="便当";
-            buttonText[1][0]="1-0";
-            buttonText[1][1]="1-1";
-            buttonText[1][2]="1-2";
-            buttonText[2][0]="2-0";
+            buttonText[1][0]="米饭";
+            buttonText[1][1]="面条";
+            buttonText[1][2]="面点";
+            buttonText[1][3]="包子饺子";
+            buttonText[2][0]="港式甜品";
+            buttonText[2][1]="饮料";
+            buttonText[2][2]="烘焙";
+            buttonText[2][3]="乳制品";
+            buttonText[3][0]="美味肉汤";
+            buttonText[3][1]="瘦身蔬菜汤";
         }
 
     }

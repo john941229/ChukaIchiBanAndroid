@@ -158,20 +158,22 @@
             </LinearLayout>
 
                 <Button
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="全部菜谱"
-                android:textSize="24dp"
-                android:textColor="#ffffff"
-                android:background="@drawable/background_button"
-                android:id="@+id/button"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text="全部菜谱"
+                    android:textSize="24dp"
+                    android:textColor="#ffffff"
+                    android:background="@drawable/background_button"
+                    android:id="@+id/all_button"
                 />
 
 
                 <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                    android:id="@+id/spview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_below="@id/all_button">
 
                 </LinearLayout>
             </LinearLayout>

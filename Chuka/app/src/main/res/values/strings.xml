@@ -4,4 +4,10 @@
     <string name="type_1">主食</string>
     <string name="type_2">甜点</string>
     <string name="type_3">汤类</string>
+    <item type="id" name="tag_sp_sid">
+    </item>
+    <item type="id" name="tag_sp_draw">
+    </item>
+    <item type="id" name="tag_sp_name">
+    </item>
 </resources>

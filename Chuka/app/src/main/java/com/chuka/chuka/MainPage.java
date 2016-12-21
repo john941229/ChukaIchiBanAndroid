@@ -6,17 +6,22 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-import static android.R.attr.button;
+import java.util.concurrent.Delayed;
+
 
 public class MainPage extends AppCompatActivity {
 
@@ -27,14 +32,31 @@ public class MainPage extends AppCompatActivity {
     int type = 0;
     public final static String EXTRA_TYPE="com.chuka.chuka.TYPE";
     String Type = "";
+    ImageView spView = null;
+    int spNum = 0;
+    int [] Spid = {101,202,303};
+    int [] spDrawableId = new int[10];
+    String [] spName = new String[10];
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+        spHandler.postDelayed(runGetSp,1000);
 
-
-
+        //  getSP();
     }
+
+    Handler spHandler = new Handler();
+
+    Runnable runGetSp = new Runnable() {
+        @Override
+        public void run() {
+
+            getSP();
+        }
+    };
+
     public void searchType0(View view){
         Intent intent = new Intent(this,TypePages.class);
         //type = 0;
@@ -79,5 +101,45 @@ public class MainPage extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void getSP(){
+        spNum = 3;
+        LinearLayout spViewLayout = (LinearLayout)findViewById(R.id.spview);
+        {
+            spDrawableId[0] = R.drawable.sp0;
+            spDrawableId[1] = R.drawable.sp1;
+            spDrawableId[2] = R.drawable.sp2;
+
+            spName[0]="冬日暖心菜";
+            spName[1]="苦涩酸食物";
+            spName[2]="微波炉菜谱";
+
+        }
+
+
+        for(int i = 0;i<spNum;i++)
+        {
+            spView = new ImageView(this);
+            spView.setImageDrawable(getResources().getDrawable(spDrawableId[i]));
+            spView.setTag(R.id.tag_sp_sid,Spid[i]);//传入sid
+            spView.setTag(R.id.tag_sp_draw,spDrawableId[i]);//传入图片id
+            spView.setTag(R.id.tag_sp_name,i);
+            spView.setOnClickListener(spListener);
+
+            spViewLayout.addView(spView);
+        }
+    }
+
+    ImageView.OnClickListener spListener = new ImageView.OnClickListener(){
+        public void onClick(View v){
+            int spTag = (Integer) v.getTag(0);
+            Intent intent = new Intent(MainPage.this,SpPage.class);
+            intent.putExtra("SpPic",(Integer)v.getTag(R.id.tag_sp_sid));
+            intent.putExtra("sid",(Integer)v.getTag(R.id.tag_sp_sid));
+            intent.putExtra("sname",spName[(Integer)v.getTag(R.id.tag_sp_name)]);
+
+            System.out.println(v.getTag(R.id.tag_sp_sid));
+            System.out.println(v.getTag(R.id.tag_sp_draw));
+        }
+    };
 }
 
