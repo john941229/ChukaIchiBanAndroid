@@ -27,12 +27,13 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="20dp"
-            android:paddingLeft="20dp">
+            android:paddingTop="15dp"
+            android:paddingLeft="20dp"
+            android:weightSum="1">
 
             <TextView
-                android:layout_width="5dp"
-                android:layout_height="5dp"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
                 android:id="@+id/s_id"
                 android:visibility="invisible"/>
 
@@ -46,10 +47,10 @@
 
             <TextView
                 android:id="@+id/s_material"
-                android:layout_width="100dp"
-                android:layout_height="30dp"
+                android:layout_width="201dp"
+                android:layout_height="wrap_content"
                 android:textSize="15dp"
-                android:textColor="#222222"/>
+                android:textColor="#222222" />
 
 
         </LinearLayout>

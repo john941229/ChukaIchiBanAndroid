@@ -111,7 +111,7 @@ public class ResultPage extends AppCompatActivity{
         mData = getData(strResult);
         //设置adapter数据格式内容
         final SimpleAdapter adapter = new SimpleAdapter(this,mData,R.layout.search_result_list,
-                new String[]{"imageUrl","name","material","id"},
+                new String[]{"imgUrl","name","material","idNumber"},
                 new int[]{R.id.search_img,R.id.search_name,R.id.s_material,R.id.s_id});
         //为adapter重写图片显示
         adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
@@ -145,7 +145,7 @@ public class ResultPage extends AppCompatActivity{
                 //popupWindow调用
                 showPopupWindow(view,
                         mData.get(position).get("name").toString(),
-                        (Bitmap)mData.get(position).get("imageUrl"),
+                        (Bitmap)mData.get(position).get("imgUrl"),
                         (List)mData.get(position).get("materialList"));
                 return false;
             }
@@ -194,10 +194,10 @@ public class ResultPage extends AppCompatActivity{
             resultNum = jsonObjs.length();
             for(int i=0;i<jsonObjs.length();i++){
                 JSONObject jsonObj = ((JSONObject)jsonObjs.opt(i));
-                int id = jsonObj.getInt("id");
+                int id = jsonObj.getInt("idNumber");
                 String name = jsonObj.getString("name");
                 JSONArray material = jsonObj.getJSONArray("material");
-                String imageUrl = jsonObj.getString("imageUrl");
+                String imageUrl = jsonObj.getString("imgUrl");
 
                 //s += id+name+material+imageUrl+"...\n";
 
@@ -207,7 +207,7 @@ public class ResultPage extends AppCompatActivity{
                 bitmap = getHttpBitmap(imageUrl);
                 //imageView = R.drawable.type0pic0;
 
-                map.put("imageUrl",bitmap);//?????????????????????????
+                map.put("imgUrl",bitmap);//?????????????????????????
 
                 map.put("name",name);
 
@@ -217,7 +217,7 @@ public class ResultPage extends AppCompatActivity{
 
                 map.put("material",materialList.toString().replaceAll("[\\[\\]]",""));
                 map.put("materialList",materialList);
-                map.put("id",id);
+                map.put("idNumber",id);
 
                 list.add(map);
 
