@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -99,11 +100,14 @@ public class ResultPage extends AppCompatActivity{
         TextView layout = (TextView) findViewById(R.id.title_search);
         layout.setText(searchName);
 
-
         getRequest(searchName);//请求数据
 
-        while (strResult == ""){
-        }//等待数据
+
+    }
+    Handler handler = new Handler();
+
+    public  void solveData()
+    {
         System.out.println(strResult);
 
         ListView listview = (ListView)findViewById(R.id.search_resultspage);
@@ -122,7 +126,7 @@ public class ResultPage extends AppCompatActivity{
                     iv.setImageBitmap((Bitmap) data);
                     return true;
                 }else
-                return false;
+                    return false;
             }
         });
 
@@ -150,9 +154,7 @@ public class ResultPage extends AppCompatActivity{
                 return false;
             }
         });
-
     }
-
     private void showPopupWindow(View view,String name,Bitmap bitmap,List mList){
         View contentView = LayoutInflater.from(mContext).inflate(
                 R.layout.pop_window,null);
@@ -269,6 +271,12 @@ public class ResultPage extends AppCompatActivity{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 strResult =  response.body().string();
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        solveData();
+                    }
+                });
 
             }
         }

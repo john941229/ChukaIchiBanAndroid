@@ -131,14 +131,16 @@ public class MainPage extends AppCompatActivity {
 
     ImageView.OnClickListener spListener = new ImageView.OnClickListener(){
         public void onClick(View v){
-            int spTag = (Integer) v.getTag(0);
+
             Intent intent = new Intent(MainPage.this,SpPage.class);
-            intent.putExtra("SpPic",(Integer)v.getTag(R.id.tag_sp_sid));
+            intent.putExtra("SpPic",(Integer)v.getTag(R.id.tag_sp_draw));
             intent.putExtra("sid",(Integer)v.getTag(R.id.tag_sp_sid));
             intent.putExtra("sname",spName[(Integer)v.getTag(R.id.tag_sp_name)]);
 
             System.out.println(v.getTag(R.id.tag_sp_sid));
             System.out.println(v.getTag(R.id.tag_sp_draw));
+            MainPage.this.onPause();
+            startActivity(intent);
         }
     };
 }

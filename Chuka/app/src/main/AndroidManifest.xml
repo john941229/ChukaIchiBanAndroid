@@ -31,6 +31,14 @@
 
         </activity>
 
+        <activity android:name=".SpPage"
+            android:label=" "
+            android:parentActivityName=".MainPage">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainPage"/>
+        </activity>
+
 
     </application>
     <uses-permission android:name="android.permission.INTERNET" />
