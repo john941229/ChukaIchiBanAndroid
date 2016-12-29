@@ -38,6 +38,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainPage"/>
         </activity>
+        <activity android:name=".DetailPage"
+            android:label=" ">
+
+        </activity>
 
 
     </application>

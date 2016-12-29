@@ -6,4 +6,7 @@
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
     <dimen name="nav_header_height">160dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="bottom_item_height">150dp</dimen>
+    <!--防止布局bug，所以需要设置一个数值区间大于bottom_item_height的复数-->
+    <dimen name="_bottom_item_height">-150.5dp</dimen>
 </resources>

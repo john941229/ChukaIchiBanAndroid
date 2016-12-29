@@ -63,6 +63,8 @@
                     android:textColor="#E6E6E6"
                     android:textSize="20dp"
                     android:paddingLeft="10dp"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
                     />
 
                 <ImageButton
@@ -165,6 +167,7 @@
                     android:textColor="#ffffff"
                     android:background="@drawable/background_button"
                     android:id="@+id/all_button"
+                    android:onClick="callAll"
                 />
 
 
@@ -173,7 +176,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_below="@id/all_button">
+                    android:layout_below="@id/all_button"
+                    >
 
                 </LinearLayout>
             </LinearLayout>

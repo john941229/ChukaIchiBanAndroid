@@ -14,11 +14,14 @@ import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.concurrent.Delayed;
 
@@ -29,6 +32,11 @@ public class MainPage extends AppCompatActivity {
 //    public final static String EXTRA_SEARCH_1="com.chuka.chuka.SEARCH1";
 //    public final static String EXTRA_SEARCH_2="com.chuka.chuka.SEARCH2";
 //    public final static String EXTRA_SEARCH_3="com.chuka.chuka.SEARCH3";
+    public final static int ROUTE_TYPE_TAG =0;
+    public final static int ROUTE_TYPE_ALL =1;
+    public final static int ROUTE_TYPE_SEARCH =2;
+    public final static int ROUTE_TYPE_ID =3;
+
     int type = 0;
     public final static String EXTRA_TYPE="com.chuka.chuka.TYPE";
     String Type = "";
@@ -44,6 +52,32 @@ public class MainPage extends AppCompatActivity {
         setContentView(R.layout.activity_main_page);
         spHandler.postDelayed(runGetSp,1000);
 
+        final LineEditText searchBar = (LineEditText)findViewById(R.id.searchBar);
+        searchBar.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+        searchBar.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+        searchBar.setOnEditorActionListener(new LineEditText.OnEditorActionListener(){
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    switch (event.getAction()) {
+                        case KeyEvent.ACTION_UP:
+                            String search = searchBar.getText().toString();
+                            Log.d("search--", search);
+                            Intent intent = new Intent(MainPage.this, ResultPage.class);
+
+                            intent.putExtra("route_type", MainPage.ROUTE_TYPE_SEARCH);
+                            intent.putExtra("searchName", search);
+                            startActivity(intent);
+
+                            return true;
+                        default:
+                            return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         //  getSP();
     }
 
@@ -56,6 +90,15 @@ public class MainPage extends AppCompatActivity {
             getSP();
         }
     };
+    public void callAll(View view){
+        Intent intent = new Intent(this,ResultPage.class);
+
+        intent.putExtra("route_type",MainPage.ROUTE_TYPE_ALL);
+        intent.putExtra("searchName","全部菜谱");
+        startActivity(intent);
+    }
+
+
 
     public void searchType0(View view){
         Intent intent = new Intent(this,TypePages.class);

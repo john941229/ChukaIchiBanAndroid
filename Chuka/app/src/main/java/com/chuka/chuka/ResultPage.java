@@ -1,4 +1,6 @@
 package com.chuka.chuka;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -58,6 +60,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static java.lang.Math.min;
+
 
 /**
  * Created by cheng on 2016/11/9.
@@ -93,14 +97,29 @@ public class ResultPage extends AppCompatActivity{
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
+        searchName = intent.getStringExtra("searchName");
 
-        searchName = intent.getStringExtra(TypePages.EXTRA_SEARCHING);
+        String route = "";
+        int route_type = intent.getIntExtra("route_type",MainPage.ROUTE_TYPE_ALL);
+
+        switch (route_type){
+            case MainPage.ROUTE_TYPE_TAG:
+                route = "tag?tag="+searchName;
+                break;
+            case MainPage.ROUTE_TYPE_SEARCH:
+                route = "search?name="+searchName;
+                break;
+            default:
+                route = "all";
+                searchName = "全部菜谱";
+                break;
+        }
 
         //标题
         TextView layout = (TextView) findViewById(R.id.title_search);
         layout.setText(searchName);
 
-        getRequest(searchName);//请求数据
+        getRequest(route);//请求数据
 
 
     }
@@ -113,9 +132,19 @@ public class ResultPage extends AppCompatActivity{
         ListView listview = (ListView)findViewById(R.id.search_resultspage);
 
         mData = getData(strResult);
+        if(mData == null) {
+            Dialog alertDialog = new AlertDialog.Builder(this).
+                    setTitle("提示").
+                    setMessage("没有有关\""+searchName+"\"的内容").
+                    create();
+            alertDialog.show();
+
+            return;
+        }
+
         //设置adapter数据格式内容
         final SimpleAdapter adapter = new SimpleAdapter(this,mData,R.layout.search_result_list,
-                new String[]{"imgUrl","name","material","idNumber"},
+                new String[]{"bitmap","name","material","idNumber"},
                 new int[]{R.id.search_img,R.id.search_name,R.id.s_material,R.id.s_id});
         //为adapter重写图片显示
         adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
@@ -137,7 +166,14 @@ public class ResultPage extends AppCompatActivity{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
                                     long arg3) {
-                Log.d("1",mData.get(position).get("materialList").toString());
+
+                Intent intent = new Intent(ResultPage.this,DetailPage.class);
+                intent.putStringArrayListExtra("materialList",(ArrayList<String>) mData.get(position).get("materialList"));
+                intent.putExtra("description",mData.get(position).get("description").toString());
+                intent.putExtra("id",(int)mData.get(position).get("idNumber"));
+                intent.putExtra("name",mData.get(position).get("name").toString());
+                intent.putExtra("imgUrl",mData.get(position).get("imgUrl").toString());
+                startActivity(intent);
 
             }
         });
@@ -149,17 +185,21 @@ public class ResultPage extends AppCompatActivity{
                 //popupWindow调用
                 showPopupWindow(view,
                         mData.get(position).get("name").toString(),
-                        (Bitmap)mData.get(position).get("imgUrl"),
-                        (List)mData.get(position).get("materialList"));
-                return false;
+                        (Bitmap)mData.get(position).get("bitmap"),
+                        (List)mData.get(position).get("materialList"),mData.get(position));
+                return true;
             }
         });
     }
-    private void showPopupWindow(View view,String name,Bitmap bitmap,List mList){
+
+
+    private void showPopupWindow(View view, String name, final Bitmap bitmap, List mList, Map<String, Object> metaData){
         View contentView = LayoutInflater.from(mContext).inflate(
                 R.layout.pop_window,null);
 
         final PopupWindow popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
+        final Map<String, Object> mData = metaData;
+
         popupWindow.setTouchable(true);
         popupWindow.setTouchInterceptor(new View.OnTouchListener() {
             @Override
@@ -182,24 +222,45 @@ public class ResultPage extends AppCompatActivity{
         popupWindow.showAtLocation(view,Gravity.CENTER,0,0);
         popupWindow.showAsDropDown(view);
 
+        Button goDetailButton = (Button)contentView.findViewById(R.id.go_detail);
+        goDetailButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(ResultPage.this,DetailPage.class);
+                intent.putStringArrayListExtra("materialList",(ArrayList<String>) mData.get("materialList"));
+                intent.putExtra("description",mData.get("description").toString());
+                intent.putExtra("id",(int)mData.get("idNumber"));
+                intent.putExtra("name",mData.get("name").toString());
+                intent.putExtra("imgUrl",mData.get("imgUrl").toString());
+
+                startActivity(intent);
+            }
+        });
+
 
     }
 
 
     private List<Map<String, Object>> getData(String JSON) {
         //处理返回的JSON串
-        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> list = null;
 
         try{
             JSONArray jsonObjs = new JSONObject(JSON).getJSONArray("results");
             String s = "";
-            resultNum = jsonObjs.length();
-            for(int i=0;i<jsonObjs.length();i++){
+            resultNum = min(jsonObjs.length(),40);
+            if (resultNum == 0)
+                return list;
+            else
+                list = new ArrayList<Map<String, Object>>();
+
+            for(int i=0;i<min(jsonObjs.length(),20);i++){
                 JSONObject jsonObj = ((JSONObject)jsonObjs.opt(i));
                 int id = jsonObj.getInt("idNumber");
                 String name = jsonObj.getString("name");
                 JSONArray material = jsonObj.getJSONArray("material");
                 String imageUrl = jsonObj.getString("imgUrl");
+                String description = jsonObj.getString("description");
 
                 //s += id+name+material+imageUrl+"...\n";
 
@@ -209,9 +270,11 @@ public class ResultPage extends AppCompatActivity{
                 bitmap = getHttpBitmap(imageUrl);
                 //imageView = R.drawable.type0pic0;
 
-                map.put("imgUrl",bitmap);//?????????????????????????
+                map.put("bitmap",bitmap);
+                map.put("imgUrl",imageUrl);
 
                 map.put("name",name);
+                map.put("description",description);
 
                 ArrayList<String> materialList = new ArrayList<String>();
                 for(int k =0;k<material.length();k++)
@@ -224,7 +287,7 @@ public class ResultPage extends AppCompatActivity{
                 list.add(map);
 
             }
-            Log.d("1",s);
+            Log.d("1",""+jsonObjs.length());
         }catch (JSONException ex){
             System.out.println("JSONS error\n");
             ex.printStackTrace();
@@ -253,13 +316,9 @@ public class ResultPage extends AppCompatActivity{
     }
 
 
-//    protected void onListItemClick(AdapterView<?> arg0,View arg1, int arg2,long arg3){
-//        Log.d("id:",(String)mData.get(arg2).get("id"));
-//    }
-
-    private void getRequest(String searchTag) {
+    private void getRequest(String route) {
         final Request request = new Request.Builder()
-                .url("http://115.159.71.53:3000/tag?tag="+searchTag)
+                .url("http://115.159.71.53:3000/"+route)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -274,6 +333,7 @@ public class ResultPage extends AppCompatActivity{
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+
                         solveData();
                     }
                 });

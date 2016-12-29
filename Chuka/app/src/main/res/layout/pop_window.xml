@@ -62,13 +62,15 @@
 
         </LinearLayout>
         <Button
+            android:id="@+id/go_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/background_button"
             android:text="去准备!"
             android:textSize="25dp"
             android:textColor="#FFFFFF"
-            android:gravity="center"/>
+            android:gravity="center"
+            />
     </LinearLayout>
 
 </LinearLayout>

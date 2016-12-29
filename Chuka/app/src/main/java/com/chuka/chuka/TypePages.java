@@ -143,8 +143,9 @@ public class TypePages extends AppCompatActivity{
             Intent intent = new Intent(TypePages.this,ResultPage.class);
             int buttonTag = (Integer) v.getTag();
             String buttonText = typeButton[buttonTag].getText().toString();
-            intent.putExtra(EXTRA_SEARCHING,buttonText);
+            intent.putExtra("searchName",buttonText);
             intent.putExtra("ParentClassName","TypePages");
+            intent.putExtra("route_type",MainPage.ROUTE_TYPE_TAG);
 
             TypePages.this.onPause();
             startActivity(intent);
