@@ -1,18 +1,11 @@
 package com.chuka.chuka;
 
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.security.keystore.UserNotAuthenticatedException;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,33 +14,31 @@ import android.widget.Toast;
 import java.io.IOException;
 
 import okhttp3.FormBody;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class LoginPage extends AppCompatActivity {
-
+public class RegisterPage extends AppCompatActivity {
     private OkHttpClient client = new OkHttpClient();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_page);
+
+        setContentView(R.layout.register_page);
 
         initUI();
     }
 
     private void initUI() {
-        Log.e("lr", "ui");
-        // 登录按钮
-        Button loginButton = (Button) findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        Button registerButton = (Button) findViewById(R.id.registerButton);
+        registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = ((EditText) findViewById(R.id.loginUsername)).getText().toString();
-                String password = ((EditText) findViewById(R.id.loginPassword)).getText().toString();
+                String username = ((EditText) findViewById(R.id.registerUsername)).getText().toString();
+                String password = ((EditText) findViewById(R.id.registerPassword)).getText().toString();
+                String repeatPassword = ((EditText) findViewById(R.id.registerRepeatPassword)).getText().toString();
 
                 Toast toast = Toast.makeText(getApplicationContext(), "", Toast.LENGTH_LONG);
                 if (username.equals("")) {
@@ -56,23 +47,20 @@ public class LoginPage extends AppCompatActivity {
                 } else if (password.equals("")) {
                     toast.setText("请输入密码");
                     toast.show();
+                } else if (repeatPassword.equals("")) {
+                    toast.setText("请确认密码");
+                    toast.show();
+                } else if (!password.equals(repeatPassword)) {
+                    toast.setText("请确认两次输入的密码是否一致");
+                    toast.show();
                 } else {
-                    login(username, password);
+                    register(username, password);
                 }
-            }
-        });
-
-        Button registerButton = (Button) findViewById(R.id.registerButton);
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginPage.this, RegisterPage.class);
-                startActivity(intent);
             }
         });
     }
 
-    private void login(final String username, final String password) {
+    private void register(final String username, final String password) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -80,7 +68,7 @@ public class LoginPage extends AppCompatActivity {
                         .add("username", username)
                         .add("password", password)
                         .build();
-                Request request = new Request.Builder().url("http://www.bewils.cn/users/login")
+                Request request = new Request.Builder().url("http://www.bewils.cn/users/signup")
                         .post(formBody)
                         .build();
                 try {
@@ -88,7 +76,13 @@ public class LoginPage extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         String body =  response.body().string();
                         if (body.equals("true")) {
-                            Log.e("lr", "true");
+                            final TextView registerInfo = (TextView) findViewById(R.id.registerInfo);
+                            registerInfo.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    registerInfo.setText("注册成功，开始体验");
+                                }
+                            });
                         }
                     } else {
                         throw new IOException("Unexpected code" + response);
