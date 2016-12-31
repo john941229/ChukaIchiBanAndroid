@@ -70,6 +70,10 @@ public class DetailPage extends AppCompatActivity {
     List<Map<String, Object>> mData;
     public String strResult = "";
     OkHttpClient client = new OkHttpClient();
+    static Integer timerButtonStop = 0;
+    static Integer timerButtonPause = 2;
+    static Integer timerButtonStart = 1;
+
 
     Handler handler = new Handler();
 
@@ -157,17 +161,6 @@ public class DetailPage extends AppCompatActivity {
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
     public void getSteps(int id) {
         final Request request = new Request.Builder()
                 .url("http://115.159.71.53:3000/id?id=" + id)
@@ -247,7 +240,6 @@ public class DetailPage extends AppCompatActivity {
         }
         @Override
         public int getCount() {
-            Log.d("getCount",dataSource.size()+"");
             return dataSource.size();
         }
 
@@ -287,7 +279,25 @@ public class DetailPage extends AppCompatActivity {
                 lp.height = 0;
             }
             stepViewHolder.targetPanel.setLayoutParams(lp);
-            stepViewHolder.label.setOnClickListener(labelClickListener);
+
+            if(step.time > 0) {
+                stepViewHolder.label.setOnClickListener(labelClickListener);
+                stepViewHolder.stepsTimer.initTime(60*step.time);
+                stepViewHolder.stepsTimer.setOnTimeCompleteListener(new Anticlockwise.OnTimeCompleteListener(){
+                    @Override
+                    public void onTimeComplete(){
+                        Toast.makeText(getApplicationContext(),"complete!",(Toast.LENGTH_SHORT)).show();
+                    }
+
+                });
+                stepViewHolder.stepsItemBt1.setTag(R.id.flag_timebtn,timerButtonStop);
+                stepViewHolder.stepsItemBt1.setText("开始");
+                stepViewHolder.stepsItemBt1.setBackgroundColor(getResources().getColor(R.color.buttonStart) );
+                stepViewHolder.stepsItemBt1.setOnClickListener(startBtnListener);
+                stepViewHolder.stepsItemBt2.setOnClickListener(resetBtnListener);
+                stepViewHolder.stepsItemBt2.setTag(R.id.flag_timebtn,step.time*60);
+
+            }
             stepViewHolder.label.setTag(position);
             stepViewHolder.stepsName.setText(step.name);
             stepViewHolder.stepsText.setText(step.text);
@@ -352,18 +362,24 @@ public class DetailPage extends AppCompatActivity {
     private class StepViewHolder implements Serializable {
         private View contentView;
         private TextView stepsName;
+        private Anticlockwise stepsTimer;
         private TextView stepsText;
         private ImageView stepsImg;
         private View label;
         private View targetPanel;
+        private Button stepsItemBt1;
+        private Button stepsItemBt2;
 
         public StepViewHolder(View contentView){
             this.contentView = contentView;
             stepsName = (TextView)contentView.findViewById(R.id.steps_name);
             stepsText = (TextView)contentView.findViewById(R.id.steps_text);
             stepsImg = (ImageView)contentView.findViewById(R.id.steps_img);
+            stepsTimer = (Anticlockwise)contentView.findViewById(R.id.steps_timer);
             label = contentView.findViewById(R.id.layout_onclick);
             targetPanel = contentView.findViewById(R.id.llshow);
+            stepsItemBt1 = (Button) contentView.findViewById(R.id.steps_item_bt1);
+            stepsItemBt2 = (Button) contentView.findViewById(R.id.steps_item_bt2);
 
         }
     }
@@ -377,7 +393,7 @@ public class DetailPage extends AppCompatActivity {
             Step item = (Step) adapter.getItem(position);
             item.setOpen(!item.isOpen());
 
-            ViewGroup itemView = (ViewGroup) v.getParent().getParent();
+            ViewGroup itemView = (ViewGroup) v.getParent().getParent().getParent();
             StepViewHolder stepViewHolder = (StepViewHolder) itemView.getTag();
 
             //Toast.makeText(DetailPage.this,"position="+position+",title="+item.getName(),Toast.LENGTH_SHORT).show();
@@ -386,4 +402,59 @@ public class DetailPage extends AppCompatActivity {
 
         }
     };
+    private View.OnClickListener startBtnListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v){
+            Integer btnFlag = (Integer) v.getTag(R.id.flag_timebtn);
+
+            if(btnFlag == timerButtonStop){
+                ViewGroup itemView = (ViewGroup) v.getParent().getParent().getParent();
+                StepViewHolder stepViewHolder = (StepViewHolder) itemView.getTag();
+
+                v.setTag(R.id.flag_timebtn,timerButtonStart);
+                stepViewHolder.stepsItemBt1.setText("暂停");
+                stepViewHolder.stepsItemBt1.setBackgroundColor(getResources().getColor(R.color.buttonPause) );
+                stepViewHolder.stepsTimer.reStart();
+            }else if(btnFlag == timerButtonStart){
+                ViewGroup itemView = (ViewGroup) v.getParent().getParent().getParent();
+                StepViewHolder stepViewHolder = (StepViewHolder) itemView.getTag();
+
+                v.setTag(R.id.flag_timebtn,timerButtonPause);
+                stepViewHolder.stepsItemBt1.setText("继续");
+                stepViewHolder.stepsTimer.onPause();
+            }else if(btnFlag == timerButtonPause){
+                ViewGroup itemView = (ViewGroup) v.getParent().getParent().getParent();
+                StepViewHolder stepViewHolder = (StepViewHolder) itemView.getTag();
+
+                v.setTag(R.id.flag_timebtn,timerButtonStart);
+                stepViewHolder.stepsItemBt1.setText("暂停");
+                stepViewHolder.stepsTimer.onResume();
+            }
+        }
+    };
+    private View.OnClickListener resetBtnListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Integer btnFlag = (Integer) v.getTag(R.id.flag_timebtn);
+
+            ViewGroup itemView = (ViewGroup) v.getParent().getParent().getParent();
+            StepViewHolder stepViewHolder = (StepViewHolder) itemView.getTag();
+
+            stepViewHolder.stepsTimer.stop();
+            stepViewHolder.stepsItemBt1.setText("开始");
+            stepViewHolder.stepsItemBt1.setBackgroundColor(getResources().getColor(R.color.buttonStart) );
+            stepViewHolder.stepsItemBt1.setTag(R.id.flag_timebtn,timerButtonStop);
+            stepViewHolder.stepsTimer.initTime(btnFlag);
+        }
+    };
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

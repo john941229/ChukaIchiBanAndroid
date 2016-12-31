@@ -7,20 +7,29 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.concurrent.Delayed;
@@ -45,13 +54,17 @@ public class MainPage extends AppCompatActivity {
     int [] Spid = {101,202,303};
     int [] spDrawableId = new int[10];
     String [] spName = new String[10];
+    private Context mContext = null;
+    DrawerLayout drawerLayout ;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
         spHandler.postDelayed(runGetSp,1000);
+        mContext = this;
 
+        drawerLayout = (DrawerLayout)findViewById(R.id.main_page);
         final LineEditText searchBar = (LineEditText)findViewById(R.id.searchBar);
         searchBar.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         searchBar.setInputType(EditorInfo.TYPE_CLASS_TEXT);
@@ -77,6 +90,8 @@ public class MainPage extends AppCompatActivity {
                 return false;
             }
         });
+
+
 
         //  getSP();
     }
@@ -184,7 +199,32 @@ public class MainPage extends AppCompatActivity {
             System.out.println(v.getTag(R.id.tag_sp_draw));
             MainPage.this.onPause();
             startActivity(intent);
+
         }
     };
+
+    public void callNavi(View v)
+    {
+   //     NavigationView navigationView = (NavigationView)findViewById(R.id.pop_navi);
+        drawerLayout.openDrawer(GravityCompat.START);
+
+    }
+
+//    private void showPopNaviWindow(View v){
+//        View contentView = LayoutInflater.from(mContext).inflate(
+//                R.layout.pop_navi_page,null);
+//
+//        final PopupWindow popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
+//
+//        popupWindow.setTouchable(true);
+//        popupWindow.setTouchInterceptor(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                return false;
+//            }
+//        });
+//
+//        popupWindow.showAsDropDown(v);
+//    }
 }
 

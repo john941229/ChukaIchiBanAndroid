@@ -10,4 +10,6 @@
     </item>
     <item type="id" name="tag_sp_name">
     </item>
+    <item type="id" name="flag_timebtn">
+    </item>
 </resources>

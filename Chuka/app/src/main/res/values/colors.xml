@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="themeOrange">#f2ff482b</color>
     <color name="themeOrangeLight">#FC4C11</color>
+    <color name="buttonStart">#49EB3E</color>
+    <color name="buttonPause">#FFD432</color>
+    <color name="buttonReset">#45CCFF</color>
 </resources>
