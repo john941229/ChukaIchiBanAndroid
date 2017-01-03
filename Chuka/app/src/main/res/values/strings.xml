@@ -4,6 +4,7 @@
     <string name="type_1">主食</string>
     <string name="type_2">甜点</string>
     <string name="type_3">汤类</string>
+    <string name="not_logined">未登录 点击登录</string>
     <item type="id" name="tag_sp_sid">
     </item>
     <item type="id" name="tag_sp_draw">

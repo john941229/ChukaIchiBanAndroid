@@ -47,8 +47,11 @@
 
             <TextView
                 android:id="@+id/s_material"
-                android:layout_width="201dp"
+                android:layout_width="197dp"
                 android:layout_height="wrap_content"
+                android:lines="3"
+                android:ellipsize="end"
+                android:maxEms="10"
                 android:textSize="15dp"
                 android:textColor="#222222" />
 

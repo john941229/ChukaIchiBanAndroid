@@ -125,9 +125,7 @@ public class ResultPage extends AppCompatActivity{
     }
     Handler handler = new Handler();
 
-    public  void solveData()
-    {
-        System.out.println(strResult);
+    public  void solveData() {
 
         ListView listview = (ListView)findViewById(R.id.search_resultspage);
 

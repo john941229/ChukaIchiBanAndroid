@@ -27,48 +27,58 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.Delayed;
 
 
 public class MainPage extends AppCompatActivity {
 
-    public final static String EXTRA_TYPE_NUM="com.chuka.chuka.TYPE_NUM";
-//    public final static String EXTRA_SEARCH_1="com.chuka.chuka.SEARCH1";
+    public final static String EXTRA_TYPE_NUM = "com.chuka.chuka.TYPE_NUM";
+    //    public final static String EXTRA_SEARCH_1="com.chuka.chuka.SEARCH1";
 //    public final static String EXTRA_SEARCH_2="com.chuka.chuka.SEARCH2";
 //    public final static String EXTRA_SEARCH_3="com.chuka.chuka.SEARCH3";
-    public final static int ROUTE_TYPE_TAG =0;
-    public final static int ROUTE_TYPE_ALL =1;
-    public final static int ROUTE_TYPE_SEARCH =2;
-    public final static int ROUTE_TYPE_ID =3;
+    public final static int ROUTE_TYPE_TAG = 0;
+    public final static int ROUTE_TYPE_ALL = 1;
+    public final static int ROUTE_TYPE_SEARCH = 2;
+    public final static int ROUTE_TYPE_ID = 3;
 
     int type = 0;
-    public final static String EXTRA_TYPE="com.chuka.chuka.TYPE";
+    public final static String EXTRA_TYPE = "com.chuka.chuka.TYPE";
     String Type = "";
     ImageView spView = null;
     int spNum = 0;
-    int [] Spid = {101,202,303};
-    int [] spDrawableId = new int[10];
-    String [] spName = new String[10];
+    int[] Spid = {101, 202, 303};
+    int[] spDrawableId = new int[10];
+    String[] spName = new String[10];
     private Context mContext = null;
-    DrawerLayout drawerLayout ;
+    private Data app;
+
+    DrawerLayout drawerLayout;
+    NavigationView popNavi;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-        spHandler.postDelayed(runGetSp,1000);
+        spHandler.postDelayed(runGetSp, 1000);
         mContext = this;
 
-        drawerLayout = (DrawerLayout)findViewById(R.id.main_page);
-        final LineEditText searchBar = (LineEditText)findViewById(R.id.searchBar);
+        drawerLayout = (DrawerLayout) findViewById(R.id.main_page);
+        popNavi =(NavigationView)findViewById(R.id.pop_navi);
+
+        final LineEditText searchBar = (LineEditText) findViewById(R.id.searchBar);
+        app = (Data) getApplication();
+
+
         searchBar.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         searchBar.setInputType(EditorInfo.TYPE_CLASS_TEXT);
-        searchBar.setOnEditorActionListener(new LineEditText.OnEditorActionListener(){
+        searchBar.setOnEditorActionListener(new LineEditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEND || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
@@ -90,6 +100,13 @@ public class MainPage extends AppCompatActivity {
                 return false;
             }
         });
+        ImageButton callNavi = (ImageButton)findViewById(R.id.mainPageMenu);
+        callNavi.setOnClickListener(new ImageButton.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
 
 
 
@@ -105,95 +122,97 @@ public class MainPage extends AppCompatActivity {
             getSP();
         }
     };
-    public void callAll(View view){
-        Intent intent = new Intent(this,ResultPage.class);
 
-        intent.putExtra("route_type",MainPage.ROUTE_TYPE_ALL);
-        intent.putExtra("searchName","全部菜谱");
+    public void callAll(View view) {
+        Intent intent = new Intent(this, ResultPage.class);
+
+        intent.putExtra("route_type", MainPage.ROUTE_TYPE_ALL);
+        intent.putExtra("searchName", "全部菜谱");
         startActivity(intent);
     }
 
 
-
-    public void searchType0(View view){
-        Intent intent = new Intent(this,TypePages.class);
+    public void searchType0(View view) {
+        Intent intent = new Intent(this, TypePages.class);
         //type = 0;
 
-        Button typeButton0 = (Button) findViewById(R.id.mainPageTypeButton_0) ;
+        Button typeButton0 = (Button) findViewById(R.id.mainPageTypeButton_0);
         Type = typeButton0.getText().toString();
 
-        intent.putExtra(EXTRA_TYPE,Type);
-        intent.putExtra(EXTRA_TYPE_NUM,0);
+        intent.putExtra(EXTRA_TYPE, Type);
+        intent.putExtra(EXTRA_TYPE_NUM, 0);
         startActivity(intent);
     }
-    public void searchType1(View view){
-        Intent intent = new Intent(this,TypePages.class);
+
+    public void searchType1(View view) {
+        Intent intent = new Intent(this, TypePages.class);
 //        type = 1;
 
-        Button typeButton1 = (Button) findViewById(R.id.mainPageTypeButton_1) ;
+        Button typeButton1 = (Button) findViewById(R.id.mainPageTypeButton_1);
         Type = typeButton1.getText().toString();
 
-        intent.putExtra(EXTRA_TYPE,Type);
+        intent.putExtra(EXTRA_TYPE, Type);
 
-        intent.putExtra(EXTRA_TYPE_NUM,1);
+        intent.putExtra(EXTRA_TYPE_NUM, 1);
         startActivity(intent);
     }
-    public void searchType2(View view){
-        Intent intent = new Intent(this,TypePages.class);
 
-        Button typeButton2 = (Button) findViewById(R.id.mainPageTypeButton_2) ;
+    public void searchType2(View view) {
+        Intent intent = new Intent(this, TypePages.class);
+
+        Button typeButton2 = (Button) findViewById(R.id.mainPageTypeButton_2);
         Type = typeButton2.getText().toString();
 
-        intent.putExtra(EXTRA_TYPE,Type);
-        intent.putExtra(EXTRA_TYPE_NUM,2);
+        intent.putExtra(EXTRA_TYPE, Type);
+        intent.putExtra(EXTRA_TYPE_NUM, 2);
         startActivity(intent);
     }
-    public void searchType3(View view){
-        Intent intent = new Intent(this,TypePages.class);
 
-        Button typeButton3 = (Button) findViewById(R.id.mainPageTypeButton_3) ;
+    public void searchType3(View view) {
+        Intent intent = new Intent(this, TypePages.class);
+
+        Button typeButton3 = (Button) findViewById(R.id.mainPageTypeButton_3);
         Type = typeButton3.getText().toString();
 
-        intent.putExtra(EXTRA_TYPE,Type);
-        intent.putExtra(EXTRA_TYPE_NUM,3);
+        intent.putExtra(EXTRA_TYPE, Type);
+        intent.putExtra(EXTRA_TYPE_NUM, 3);
         startActivity(intent);
     }
 
-    public void getSP(){
+    public void getSP() {
         spNum = 3;
-        LinearLayout spViewLayout = (LinearLayout)findViewById(R.id.spview);
+        LinearLayout spViewLayout = (LinearLayout) findViewById(R.id.spview);
         {
             spDrawableId[0] = R.drawable.sp0;
             spDrawableId[1] = R.drawable.sp1;
             spDrawableId[2] = R.drawable.sp2;
 
-            spName[0]="冬日暖心菜";
-            spName[1]="苦涩酸食物";
-            spName[2]="微波炉菜谱";
+            spName[0] = "冬日暖心菜";
+            spName[1] = "苦涩酸食物";
+            spName[2] = "微波炉菜谱";
 
         }
 
 
-        for(int i = 0;i<spNum;i++)
-        {
+        for (int i = 0; i < spNum; i++) {
             spView = new ImageView(this);
             spView.setImageDrawable(getResources().getDrawable(spDrawableId[i]));
-            spView.setTag(R.id.tag_sp_sid,Spid[i]);//传入sid
-            spView.setTag(R.id.tag_sp_draw,spDrawableId[i]);//传入图片id
-            spView.setTag(R.id.tag_sp_name,i);
+            spView.setTag(R.id.tag_sp_sid, Spid[i]);//传入sid
+            spView.setTag(R.id.tag_sp_draw, spDrawableId[i]);//传入图片id
+            spView.setTag(R.id.tag_sp_name, i);
             spView.setOnClickListener(spListener);
 
             spViewLayout.addView(spView);
         }
     }
 
-    ImageView.OnClickListener spListener = new ImageView.OnClickListener(){
-        public void onClick(View v){
+    ImageView.OnClickListener spListener = new ImageView.OnClickListener() {
+        public void onClick(View v) {
 
-            Intent intent = new Intent(MainPage.this,SpPage.class);
-            intent.putExtra("SpPic",(Integer)v.getTag(R.id.tag_sp_draw));
-            intent.putExtra("sid",(Integer)v.getTag(R.id.tag_sp_sid));
-            intent.putExtra("sname",spName[(Integer)v.getTag(R.id.tag_sp_name)]);
+            Intent intent = new Intent(MainPage.this, SpPage.class);
+            intent.putExtra("SpPic", (Integer) v.getTag(R.id.tag_sp_draw));
+            intent.putExtra("sid", (Integer) v.getTag(R.id.tag_sp_sid));
+            intent.putExtra("sname", spName[(Integer) v.getTag(R.id.tag_sp_name)]);
 
             System.out.println(v.getTag(R.id.tag_sp_sid));
             System.out.println(v.getTag(R.id.tag_sp_draw));
@@ -203,28 +222,43 @@ public class MainPage extends AppCompatActivity {
         }
     };
 
-    public void callNavi(View v)
-    {
-   //     NavigationView navigationView = (NavigationView)findViewById(R.id.pop_navi);
-        drawerLayout.openDrawer(GravityCompat.START);
+
+    public void login(View v) {
+        final Data app = (Data) getApplication();
+        if (app.getUserName() == "") {
+            //未登录动作
+            Intent intent = new Intent(MainPage.this, LoginPage.class);
+            MainPage.this.startActivityForResult(intent, 1);
+        } else {
+
+        }
 
     }
 
-//    private void showPopNaviWindow(View v){
-//        View contentView = LayoutInflater.from(mContext).inflate(
-//                R.layout.pop_navi_page,null);
-//
-//        final PopupWindow popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
-//
-//        popupWindow.setTouchable(true);
-//        popupWindow.setTouchInterceptor(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return false;
-//            }
-//        });
-//
-//        popupWindow.showAsDropDown(v);
-//    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case RESULT_OK:
+                super.onActivityResult(requestCode, resultCode, data);
+                final Data app = (Data) getApplication();
+
+                Bundle bundle = data.getExtras();
+
+                View headerView = popNavi.getHeaderView(0);
+
+
+                final TextView naviUserName = (TextView) headerView.findViewById(R.id.navi_username);
+                naviUserName.setText(app.getUserName());
+
+                break;
+            case RESULT_CANCELED:
+                Toast.makeText(getApplicationContext(), "登录失败", (Toast.LENGTH_SHORT)).show();
+                break;
+            default:
+                break;
+        }
+    }
+
+
 }
 

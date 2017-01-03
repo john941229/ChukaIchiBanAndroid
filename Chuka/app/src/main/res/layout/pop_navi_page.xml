@@ -16,11 +16,15 @@
                 android:layout_marginTop="16dp"
                 android:ellipsize="end" />
             <TextView
-                android:id="@+id/navi_name"
-                android:layout_width="220dp"
+                android:id="@+id/navi_username"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
-                android:textColor="#AAFFFFFF"/>
+                android:hint="@string/not_logined"
+                android:textSize="18dp"
+                android:textColorHint="#AAFFFFFF"
+                android:textColor="#AAFFFFFF"
+                android:onClick="login"/>
 
         </LinearLayout>
 

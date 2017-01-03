@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,7 +33,6 @@ public class TypePages extends AppCompatActivity{
 
     public String typeName= "";
     String TAG = "--";
-
     private Drawable [][] typePics = new Drawable[4][20];
 
     private int [] typeMenuNum = {8,4,4,4};
@@ -99,7 +99,6 @@ public class TypePages extends AppCompatActivity{
         layout.setText(typeName);
     //  layout.setTextSize(40);
 
-
         TableLayout layout2 = (TableLayout)findViewById(R.id.types);
         //layout2.setOrientation(LinearLayout.HORIZONTAL);
 //        setContentView(layout2);
@@ -148,11 +147,20 @@ public class TypePages extends AppCompatActivity{
             intent.putExtra("route_type",MainPage.ROUTE_TYPE_TAG);
 
             TypePages.this.onPause();
-            startActivity(intent);
 
+            startActivity(intent);
 
         }
     };
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onPause() {

@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -83,6 +84,7 @@ public class DetailPage extends AppCompatActivity {
 
     private final List<Step> stepList = new ArrayList<DetailPage.Step>();
     private ListView mListView;
+    private Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +122,7 @@ public class DetailPage extends AppCompatActivity {
         listView.setFocusable(false);
         mListView = (ListView)findViewById(R.id.main_listview);
         getSteps(id);
-
+        mListView.setFocusable(false);
 
     }
 
@@ -406,6 +408,7 @@ public class DetailPage extends AppCompatActivity {
         @Override
         public void onClick(View v){
             Integer btnFlag = (Integer) v.getTag(R.id.flag_timebtn);
+
 
             if(btnFlag == timerButtonStop){
                 ViewGroup itemView = (ViewGroup) v.getParent().getParent().getParent();
