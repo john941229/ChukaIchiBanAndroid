@@ -109,6 +109,7 @@ public class LoginPage extends AppCompatActivity {
             array = res.split(",");
             app.setUserId(array[0]);
             app.setUserName(array[1]);
+            app.setLogined(true);
 
             Bundle bundle = new Bundle();
             bundle.putString("userName",app.getUserName());

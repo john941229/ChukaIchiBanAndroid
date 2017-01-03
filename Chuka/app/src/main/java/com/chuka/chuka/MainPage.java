@@ -46,14 +46,14 @@ public class MainPage extends AppCompatActivity {
     public final static int ROUTE_TYPE_TAG = 0;
     public final static int ROUTE_TYPE_ALL = 1;
     public final static int ROUTE_TYPE_SEARCH = 2;
-    public final static int ROUTE_TYPE_ID = 3;
+    public final static int ROUTE_TYPE_COLLCETION = 3;
 
     int type = 0;
     public final static String EXTRA_TYPE = "com.chuka.chuka.TYPE";
     String Type = "";
     ImageView spView = null;
     int spNum = 0;
-    int[] Spid = {101, 202, 303};
+    int[] Spid = {101, 102, 103};
     int[] spDrawableId = new int[10];
     String[] spName = new String[10];
     private Context mContext = null;
@@ -73,8 +73,6 @@ public class MainPage extends AppCompatActivity {
         popNavi =(NavigationView)findViewById(R.id.pop_navi);
 
         final LineEditText searchBar = (LineEditText) findViewById(R.id.searchBar);
-        app = (Data) getApplication();
-
 
         searchBar.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         searchBar.setInputType(EditorInfo.TYPE_CLASS_TEXT);
@@ -105,6 +103,28 @@ public class MainPage extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        ImageButton callCollecttion = (ImageButton)findViewById(R.id.collection);
+        callCollecttion.setOnClickListener(new ImageButton.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                app = (Data) getApplication();
+                boolean isLogined = app.isLogined();
+                if(isLogined){
+                    Intent intent = new Intent(MainPage.this, ResultPage.class);
+                    intent.putExtra("route_type",MainPage.ROUTE_TYPE_COLLCETION);
+                    intent.putExtra("searchName","收藏");
+                    startActivity(intent);
+
+                }else{
+                    Toast.makeText(getApplicationContext(), "您未登录,请先登录!", (Toast.LENGTH_SHORT)).show();
+                    Intent intent = new Intent(MainPage.this, LoginPage.class);
+                    MainPage.this.startActivityForResult(intent, 1);
+                }
+
+
             }
         });
 
@@ -225,7 +245,7 @@ public class MainPage extends AppCompatActivity {
 
     public void login(View v) {
         final Data app = (Data) getApplication();
-        if (app.getUserName() == "") {
+        if (!app.isLogined()) {
             //未登录动作
             Intent intent = new Intent(MainPage.this, LoginPage.class);
             MainPage.this.startActivityForResult(intent, 1);

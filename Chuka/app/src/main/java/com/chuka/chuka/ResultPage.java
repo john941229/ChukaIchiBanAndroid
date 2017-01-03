@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,6 +38,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -56,6 +58,7 @@ import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -77,6 +80,11 @@ public class ResultPage extends AppCompatActivity{
     private Context mContext = null;
     OkHttpClient client = new OkHttpClient();
     List<Map<String, Object>> mData;
+    int[] imageCollection = new int[]{
+            R.drawable.collection_false,
+            R.drawable.collection_true
+    };
+    LoadingDialog dialog;
 
     public Bitmap bitmap;
 
@@ -101,6 +109,8 @@ public class ResultPage extends AppCompatActivity{
 
         String route = "";
         int route_type = intent.getIntExtra("route_type",MainPage.ROUTE_TYPE_ALL);
+        final Data app = (Data) getApplication();
+        String userId = app.getUserId();
 
         switch (route_type){
             case MainPage.ROUTE_TYPE_TAG:
@@ -108,6 +118,9 @@ public class ResultPage extends AppCompatActivity{
                 break;
             case MainPage.ROUTE_TYPE_SEARCH:
                 route = "search?name="+searchName;
+                break;
+            case MainPage.ROUTE_TYPE_COLLCETION:
+                route = "collection?userId="+userId;
                 break;
             default:
                 route = "all";
@@ -118,6 +131,9 @@ public class ResultPage extends AppCompatActivity{
         //标题
         TextView layout = (TextView) findViewById(R.id.title_search);
         layout.setText(searchName);
+        dialog=new LoadingDialog(mContext,"玩命加载中...");
+//显示Dialog
+        dialog.show();
 
         getRequest(route);//请求数据
 
@@ -136,6 +152,7 @@ public class ResultPage extends AppCompatActivity{
                     setMessage("没有有关\""+searchName+"\"的内容").
                     create();
             alertDialog.show();
+            dialog.close();
 
             return;
         }
@@ -181,7 +198,7 @@ public class ResultPage extends AppCompatActivity{
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 //popupWindow调用
-                showPopupWindow(view,
+                showPopupWindow(view,(int)mData.get(position).get("idNumber"),
                         mData.get(position).get("name").toString(),
                         (Bitmap)mData.get(position).get("bitmap"),
                         (List)mData.get(position).get("materialList"),mData.get(position));
@@ -191,12 +208,13 @@ public class ResultPage extends AppCompatActivity{
     }
 
 
-    private void showPopupWindow(View view, String name, final Bitmap bitmap, List mList, Map<String, Object> metaData){
+    private void showPopupWindow(View view,int idNumber,String name, final Bitmap bitmap, List mList, Map<String, Object> metaData){
         View contentView = LayoutInflater.from(mContext).inflate(
                 R.layout.pop_window,null);
 
         final PopupWindow popupWindow = new PopupWindow(contentView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
         final Map<String, Object> mData = metaData;
+        final int id = idNumber;
 
         popupWindow.setTouchable(true);
         popupWindow.setTouchInterceptor(new View.OnTouchListener() {
@@ -213,6 +231,46 @@ public class ResultPage extends AppCompatActivity{
         imageView.setImageBitmap(bitmap);
         TextView mLi = (TextView)contentView.findViewById(R.id.pop_material);
         mLi.setText(mList.toString().replaceAll("[\\[\\]]",""));
+
+        //是否已收藏
+
+        final boolean isCollection;
+        boolean flag = false;
+        final Data app = (Data)getApplication();
+        if(app.isLogined()){
+            try {
+                flag = getCollectioned(id);
+            }
+            catch (IOException e){
+            }
+        }
+        Log.d("flag",flag?"true":"false");
+        isCollection=flag;
+
+        final ImageButton buttonCollection = (ImageButton) contentView.findViewById(R.id.button_collection);
+        if(isCollection){
+            buttonCollection.setImageResource(imageCollection[1]);
+        }else{
+            buttonCollection.setImageResource(imageCollection[0]);
+        }
+        buttonCollection.setOnClickListener(new ImageButton.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                boolean flag = false;
+                final Data app = (Data) getApplication();
+                if (app.isLogined()){
+                        buttonCollection.setImageResource(imageCollection[(isCollection) ? 0 : 1]);
+                    try {
+                        setCollection(id);
+                    }
+                    catch (IOException e) {
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "您未登录,请先登录!", (Toast.LENGTH_SHORT)).show();
+                }
+            }
+        });
+
 
 
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -285,12 +343,13 @@ public class ResultPage extends AppCompatActivity{
                 list.add(map);
 
             }
+
             Log.d("1",""+jsonObjs.length());
         }catch (JSONException ex){
             System.out.println("JSONS error\n");
             ex.printStackTrace();
         }
-
+        dialog.close();
         return list;
     }
 
@@ -322,20 +381,16 @@ public class ResultPage extends AppCompatActivity{
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 strResult =  response.body().string();
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-
                         solveData();
                     }
                 });
-
             }
         }
         );
@@ -353,4 +408,33 @@ public class ResultPage extends AppCompatActivity{
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public boolean getCollectioned(int id) throws IOException{
+        final Data app = (Data) getApplication();
+        final OkHttpClient client = new OkHttpClient().newBuilder().build();
+        String URL = "http://115.159.71.53:3000/users/hasStared?id="+id+"&userId="+app.getUserId();
+        final Request request = new Request.Builder()
+                .url(URL)
+                .build();
+        Call call = client.newCall(request);
+        Response execute = call.execute();
+        String output = execute.body().string();
+        Log.d("getCollection",output+""+output.length());
+        return (output.length() == 4);
+
+    }
+    public void setCollection(int id) throws IOException{
+        final Data app = (Data) getApplication();
+        final OkHttpClient client = new OkHttpClient().newBuilder().build();
+        String URL = "http://115.159.71.53:3000/cusine/star?id="+id+"&userId="+app.getUserId();
+
+        final Request request = new Request.Builder()
+                .url(URL)
+                .build();
+        Call call = client.newCall(request);
+        Response execute = call.execute();
+        Log.d("setCollection",execute.body().string());
+
+    }
+
 }
