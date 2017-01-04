@@ -29,6 +29,11 @@ public class Data extends Application{
     public void setLogined(boolean flag){
         this.logined = flag;
     }
+    public void setLogout(){
+        this.logined =false;
+        this.userName = "";
+        this.userId = "";
+    }
     @Override
     public void onCreate(){
         userId = "";

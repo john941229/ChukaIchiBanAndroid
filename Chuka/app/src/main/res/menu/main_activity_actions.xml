@@ -3,16 +3,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/item_one"
-            android:title="我的动态">
-        </item>
-        <item
-            android:id="@+id/item_two"
-            android:title="我的留言">
-
-        </item>
-        <item
-            android:id="@+id/item_three"
-            android:title="附近的人">
+            android:title="我的收藏">
         </item>
     </group>
 </menu>

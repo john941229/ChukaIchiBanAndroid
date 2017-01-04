@@ -1,6 +1,7 @@
 package com.chuka.chuka;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -12,6 +13,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +23,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -125,6 +128,27 @@ public class MainPage extends AppCompatActivity {
                 }
 
 
+            }
+        });
+        popNavi.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item){
+                if(item.getItemId() == R.id.item_one){
+                    app = (Data) getApplication();
+                    boolean isLogined = app.isLogined();
+                    if(isLogined){
+                        Intent intent = new Intent(MainPage.this, ResultPage.class);
+                        intent.putExtra("route_type",MainPage.ROUTE_TYPE_COLLCETION);
+                        intent.putExtra("searchName","收藏");
+                        startActivity(intent);
+
+                    }else{
+                        Toast.makeText(getApplicationContext(), "您未登录,请先登录!", (Toast.LENGTH_SHORT)).show();
+                        Intent intent = new Intent(MainPage.this, LoginPage.class);
+                        MainPage.this.startActivityForResult(intent, 1);
+                    }
+                }
+                return true;
             }
         });
 
@@ -250,7 +274,22 @@ public class MainPage extends AppCompatActivity {
             Intent intent = new Intent(MainPage.this, LoginPage.class);
             MainPage.this.startActivityForResult(intent, 1);
         } else {
-
+            new AlertDialog.Builder(MainPage.this).setTitle("退出登录")
+                    .setMessage("是否退出登录?")
+                    .setPositiveButton("确认",new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog,int which){
+                            app.setLogout();
+                            View headerView = popNavi.getHeaderView(0);
+                            final TextView naviUserName = (TextView) headerView.findViewById(R.id.navi_username);
+                            naviUserName.setText("未登录,点击登录");
+                        }
+                    }).setNegativeButton("取消",new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog,int which) {
+                            Log.i("canceled", "");
+                        }
+                }).show();
         }
 
     }
@@ -268,7 +307,7 @@ public class MainPage extends AppCompatActivity {
 
 
                 final TextView naviUserName = (TextView) headerView.findViewById(R.id.navi_username);
-                naviUserName.setText(app.getUserName());
+                naviUserName.setText(app.getUserName()+",点击退出");
 
                 break;
             case RESULT_CANCELED:
